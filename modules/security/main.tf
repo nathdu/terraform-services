@@ -3,45 +3,64 @@ resource "aws_security_group" "http_and_https_sg" {
   description = "Allow HTTP and HTTPS traffic"
   vpc_id      = var.vpc_id
 
-  ingress {
-    description      = "Allow inbound traffic from http"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  ingress {
-    description      = "Allow inbound traffic from https"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    description      = "Allow outbound traffic to http"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    description      = "Allow outbound traffic to https"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags = {
     Name = "http_and_https_sg"
   }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "http_ingress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 80
+  ip_protocol = "tcp"
+  to_port     = 80
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_port_ipv4_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 3000
+  ip_protocol = "tcp"
+  to_port     = 3000
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_port_ipv6_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv6   = "::/0"
+  from_port   = 3000
+  ip_protocol = "tcp"
+  to_port     = 3000
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "https_ingress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  ip_protocol = "tcp"
+  to_port     = 443
+}
+
+resource "aws_vpc_security_group_egress_rule" "http_egress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 80
+  ip_protocol = "tcp"
+  to_port     = 80
+}
+
+resource "aws_vpc_security_group_egress_rule" "https_egress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  ip_protocol = "tcp"
+  to_port     = 443
 }
 
 resource "aws_security_group" "ssh_sg" {
@@ -49,15 +68,16 @@ resource "aws_security_group" "ssh_sg" {
   description = "Allow SSH traffic from my IP"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["109.153.206.253/32"]
-    ipv6_cidr_blocks = ["fe80::215:5dff:feb6:77e/128"]
-  }
-
   tags = {
     Name = "ssh_sg"
   }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ssh_ingress_rule" {
+  security_group_id = aws_security_group.ssh_sg.id
+
+  cidr_ipv4   = "109.153.206.253/32"
+  from_port   = 22
+  ip_protocol = "tcp"
+  to_port     = 22
 }

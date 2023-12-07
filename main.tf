@@ -2,7 +2,19 @@ module "networking" {
   source = "./modules/networking"
   vpc_name = "project"
   cidr_range         = "10.0.0.0/20"
-  availability_zones = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-  public_subnets     = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets    = ["10.0.8.0/24", "10.0.9.0/24", "10.0.10.0/24"]
+  availability_zones = var.availability_zones
+  public_subnets     = var.public_subnets
+  private_subnets    = var.private_subnets
+}
+
+module "security" {
+  source = "./modules/security"
+  vpc_id = module.networking.vpc_id
+}
+
+module "services" {
+  source = "./modules/services"
+  public_subnets    = module.networking.public_subnets
+  vpc_security_group_ids = module.security.security_group_ids
+  security_group_id = module.security.security_group_ids
 }
