@@ -10,6 +10,10 @@ variable "private_subnets" {
   type = list(string)
 }
 
-# variable "security_group_ids" {
-#   type = list(string)
-# }
+variable "service_names" {
+  type = list(string)
+}
+
+variable "database_names" {
+  type = list(string)
+}
