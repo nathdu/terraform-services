@@ -14,8 +14,8 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "lighting_service" {
-  count                       = 1
+resource "aws_instance" "services" {
+  count                       = 3
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = var.public_subnets[count.index]
@@ -23,22 +23,23 @@ resource "aws_instance" "lighting_service" {
   associate_public_ip_address = true
   key_name                    = "octopus"
   tags = {
-    Name = "lighting_service"
+    Name = "${var.service_names[count.index]}-service"
   }
 }
 
-resource "aws_dynamodb_table" "db-table" {
-  name           = "db-table"
+resource "aws_dynamodb_table" "service-tables" {
+  count = length(var.database_names)
+  name           = "${var.database_names[count.index]}"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
 
   attribute {
     name = "id"
-    type = "S"
+    type = "N"
   }
 
   tags = {
-    Name        = "dynamodb-table-1"
+    Name        = "${var.database_names[count.index]}"
     Environment = "production"
   }
 }

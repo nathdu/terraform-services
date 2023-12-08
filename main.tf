@@ -17,4 +17,6 @@ module "services" {
   public_subnets    = module.networking.public_subnets
   vpc_security_group_ids = module.security.security_group_ids
   security_group_id = module.security.security_group_ids
+  service_names = var.service_names
+  database_names = var.database_names
 }
