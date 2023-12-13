@@ -17,22 +17,40 @@ resource "aws_vpc_security_group_ingress_rule" "http_ingress_rule" {
   to_port     = 80
 }
 
-resource "aws_vpc_security_group_ingress_rule" "app_port_ipv4_rule" {
+resource "aws_vpc_security_group_ingress_rule" "app_port_ipv4_ingress_rule" {
   security_group_id = aws_security_group.http_and_https_sg.id
 
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 3000
   ip_protocol = "tcp"
-  to_port     = 3000
+  to_port     = 3000 + length(var.service_names) - 1
 }
 
-resource "aws_vpc_security_group_ingress_rule" "app_port_ipv6_rule" {
+resource "aws_vpc_security_group_ingress_rule" "app_port_ipv6_ingress_rule" {
   security_group_id = aws_security_group.http_and_https_sg.id
 
   cidr_ipv6   = "::/0"
   from_port   = 3000
   ip_protocol = "tcp"
-  to_port     = 3000
+  to_port     = 3000 + length(var.service_names) - 1
+}
+
+resource "aws_vpc_security_group_egress_rule" "app_port_ipv4_egress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 3000
+  ip_protocol = "tcp"
+  to_port     = 3000 + length(var.service_names) - 1
+}
+
+resource "aws_vpc_security_group_egress_rule" "app_port_ipv6_egress_rule" {
+  security_group_id = aws_security_group.http_and_https_sg.id
+
+  cidr_ipv6   = "::/0"
+  from_port   = 3000
+  ip_protocol = "tcp"
+  to_port     = 3000 + length(var.service_names) - 1
 }
 
 
