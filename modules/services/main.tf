@@ -28,10 +28,10 @@ resource "aws_instance" "services" {
 }
 
 resource "aws_dynamodb_table" "service-tables" {
-  count = length(var.database_names)
-  name           = "${var.database_names[count.index]}"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  count        = length(var.database_names)
+  name         = var.database_names[count.index]
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   attribute {
     name = "id"
