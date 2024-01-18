@@ -8,8 +8,8 @@ module "networking" {
 }
 
 module "security" {
-  source = "./modules/security"
-  vpc_id = module.networking.vpc_id
+  source        = "./modules/security"
+  vpc_id        = module.networking.vpc_id
   service_names = var.service_names
 }
 
