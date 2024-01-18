@@ -1,1 +1,1 @@
-Next task: Add autoscaling
+Almost complete, just need to add autoscaling and write readme
